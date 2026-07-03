@@ -22,21 +22,21 @@ create_dashboard_with_gcloud() {
   local UPLOAD_LOG=$2
 
   # Create the dashboard using gcloud. and store output into a variable
-  CREATE_LOG=$(gcloud monitoring dashboards create --project=$PROJECT --config-from-file=$FILE 2>&1)
+  CREATE_LOG=$(gcloud monitoring dashboards create --project="$PROJECT" --config-from-file="$FILE" 2>&1)
   # Parse out the Dashboard ID from the log output
-  DASHBOARD_ID=$(echo $CREATE_LOG | cut -d "[" -f2 | cut -d "]" -f1)
-  BASE_NAME=$(basename $FILE)
+  DASHBOARD_ID=$(printf '%s\n' "$CREATE_LOG" | cut -d "[" -f2 | cut -d "]" -f1)
+  BASE_NAME=$(basename "$FILE")
 
   # successful creation of a dashboard follows format of "Created [DASHBOARD_ID]."
   if [[ $CREATE_LOG =~ ^Created.* ]]; then
     echo
     echo -e "\033[32m✓ $BASE_NAME successfully uploaded: \033[0m\n\033[34mhttps://console.cloud.google.com/monitoring/dashboards/builder/$DASHBOARD_ID?project=$PROJECT\033[0m"
     if [ ! -z "$2" ]; then
-      echo "$BASE_NAME, https://console.cloud.google.com/monitoring/dashboards/builder/$DASHBOARD_ID?project=$PROJECT" >> $UPLOAD_LOG
+      echo "$BASE_NAME, https://console.cloud.google.com/monitoring/dashboards/builder/$DASHBOARD_ID?project=$PROJECT" >> "$UPLOAD_LOG"
     fi
   else
     echo "gcloud monitoring dashboards create resulted in unexpected output:"
-    echo $CREATE_LOG
+    printf '%s\n' "$CREATE_LOG"
     exit 1
   fi
 }
