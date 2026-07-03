@@ -25,6 +25,7 @@ create_dashboard_with_gcloud() {
   CREATE_LOG=$(gcloud monitoring dashboards create --project="$PROJECT" --config-from-file="$FILE" 2>&1)
   # Parse out the Dashboard ID from the log output
   DASHBOARD_ID=$(printf '%s\n' "$CREATE_LOG" | cut -d "[" -f2 | cut -d "]" -f1)
+  BASE_NAME=$(basename $FILE)
   BASE_NAME=$(basename "$FILE")
 
   # successful creation of a dashboard follows format of "Created [DASHBOARD_ID]."
