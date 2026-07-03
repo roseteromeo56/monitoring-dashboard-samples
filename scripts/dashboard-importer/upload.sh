@@ -88,7 +88,7 @@ main() {
       # Loop through JSONs and upload them via gcloud
       for file in $JSON_PATH/*.json; do
         if [[ ! "$file" =~ "report.json" ]]; then
-          create_dashboard_with_gcloud $file $UPLOAD_LOG
+          create_dashboard_with_gcloud "$file" "$UPLOAD_LOG"
         fi
       done
       echo
@@ -122,4 +122,4 @@ then
   exit
 fi
 
-main $JSON_PATH $PROJECT
+main "$JSON_PATH" "$PROJECT"
