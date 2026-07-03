@@ -22,21 +22,22 @@ create_dashboard_with_gcloud() {
   local UPLOAD_LOG=$2
 
   # Create the dashboard using gcloud. and store output into a variable
-  CREATE_LOG=$(gcloud monitoring dashboards create --project=$PROJECT --config-from-file=$FILE 2>&1)
+  CREATE_LOG=$(gcloud monitoring dashboards create --project="$PROJECT" --config-from-file="$FILE" 2>&1)
   # Parse out the Dashboard ID from the log output
   DASHBOARD_ID=$(printf '%s\n' "$CREATE_LOG" | cut -d "[" -f2 | cut -d "]" -f1)
   BASE_NAME=$(basename $FILE)
+  BASE_NAME=$(basename "$FILE")
 
   # successful creation of a dashboard follows format of "Created [DASHBOARD_ID]."
   if [[ $CREATE_LOG =~ ^Created.* ]]; then
     echo
     echo -e "\033[32m✓ $BASE_NAME successfully uploaded: \033[0m\n\033[34mhttps://console.cloud.google.com/monitoring/dashboards/builder/$DASHBOARD_ID?project=$PROJECT\033[0m"
     if [ ! -z "$2" ]; then
-      echo "$BASE_NAME, https://console.cloud.google.com/monitoring/dashboards/builder/$DASHBOARD_ID?project=$PROJECT" >> $UPLOAD_LOG
+      echo "$BASE_NAME, https://console.cloud.google.com/monitoring/dashboards/builder/$DASHBOARD_ID?project=$PROJECT" >> "$UPLOAD_LOG"
     fi
   else
     echo "gcloud monitoring dashboards create resulted in unexpected output:"
-    echo $CREATE_LOG
+    printf '%s\n' "$CREATE_LOG"
     exit 1
   fi
 }
@@ -60,7 +61,7 @@ main() {
       JSON_PATH="$JSON_PATH/"
     fi
 
-    FILE_COUNT=$(find $1 -type f -name "*.json" | grep -v report.json | wc -l)
+    FILE_COUNT=$(find "$1" -type f -name "*.json" | grep -v report.json | wc -l)
 
     echo "Uploading $FILE_COUNT dashboard(s) from a directory with the following args:"
     echo -e "Directory: \033[34m$JSON_PATH\033[0m"
@@ -88,7 +89,7 @@ main() {
       # Loop through JSONs and upload them via gcloud
       for file in $JSON_PATH/*.json; do
         if [[ ! "$file" =~ "report.json" ]]; then
-          create_dashboard_with_gcloud $file $UPLOAD_LOG
+          create_dashboard_with_gcloud "$file" "$UPLOAD_LOG"
         fi
       done
       echo
@@ -96,10 +97,10 @@ main() {
     fi
   elif [[ -f $JSON_PATH ]]; then
     # path provided is a single file
-    BASE_NAME=$(basename $JSON_PATH)
+    BASE_NAME=$(basename -- "$JSON_PATH")
     echo "Uploading json file: $BASE_NAME to project: $PROJECT..."
 
-    create_dashboard_with_gcloud $JSON_PATH
+    create_dashboard_with_gcloud "$JSON_PATH"
   else
     echo "path $JSON_PATH is not a directory or a JSON file"
   fi
@@ -122,4 +123,4 @@ then
   exit
 fi
 
-main $JSON_PATH $PROJECT
+main "$JSON_PATH" "$PROJECT"
