@@ -96,7 +96,7 @@ main() {
     fi
   elif [[ -f $JSON_PATH ]]; then
     # path provided is a single file
-    BASE_NAME=$(basename $JSON_PATH)
+    BASE_NAME=$(basename "$JSON_PATH")
     echo "Uploading json file: $BASE_NAME to project: $PROJECT..."
 
     create_dashboard_with_gcloud $JSON_PATH
