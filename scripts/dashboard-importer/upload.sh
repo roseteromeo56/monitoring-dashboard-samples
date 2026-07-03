@@ -96,8 +96,9 @@ main() {
       echo -e "Upload log created in \033[34m$UPLOAD_LOG\033[0m"
     fi
   elif [[ -f $JSON_PATH ]]; then
-    # path provided is a single file
-    BASE_NAME=$(basename -- "$JSON_PATH")
+    # path provided is a single file dd/fix/quote-json-path-basename
+    BASE_NAME=$(basename "$JSON_PATH")
+    BASE_NAME=$(basename -- "$JSON_PATH") master
     echo "Uploading json file: $BASE_NAME to project: $PROJECT..."
 
     create_dashboard_with_gcloud "$JSON_PATH"
