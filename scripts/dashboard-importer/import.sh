@@ -25,7 +25,7 @@ then
 fi
 
 # Convert dashboards
-CONVERSION_OUTPUT=$(node dist/convert.js dashboards $JSON_PATH)
+CONVERSION_OUTPUT=$(node dist/convert.js dashboards "$JSON_PATH")
 echo "$CONVERSION_OUTPUT"
 
 # If project provided then upload the converted dashboard to the project
