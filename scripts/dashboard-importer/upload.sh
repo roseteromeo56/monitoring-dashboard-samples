@@ -60,7 +60,7 @@ main() {
       JSON_PATH="$JSON_PATH/"
     fi
 
-    FILE_COUNT=$(find $1 -type f -name "*.json" | grep -v report.json | wc -l)
+    FILE_COUNT=$(find "$1" -type f -name "*.json" | grep -v report.json | wc -l)
 
     echo "Uploading $FILE_COUNT dashboard(s) from a directory with the following args:"
     echo -e "Directory: \033[34m$JSON_PATH\033[0m"
