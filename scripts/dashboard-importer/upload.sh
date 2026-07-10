@@ -73,7 +73,7 @@ main() {
     # print out the name of all the JSONs in the directory
     for file in $JSON_PATH/*.json; do
       if [[ ! "$file" =~ "report.json" ]]; then
-        BASE_NAME=$(basename ${file})
+        BASE_NAME=$(basename -- "$file")
         echo "- $BASE_NAME"
       fi
     done
